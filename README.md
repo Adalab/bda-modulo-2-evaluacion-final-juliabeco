@@ -28,8 +28,13 @@ A lo largo de este ejercicio, apliqué los conocimientos adquiridos durante el m
 ## 🧩 Contenido del repositorio
 ```
 📦 bda-modulo-2-evaluacion-final-juliabeco/
-├── evaluacion_juliabeco_M2.sql # Archivo principal con todas las consultas resueltas
+├── 
 ├── README.md # Documentación del proyecto
+├── evaluacion_juliabeco_M2.sql # Archivo principal con todas las consultas resueltas
+├── recursos/
+│   └── Diagrama.PNG
+│   └── query20.PNG
+
 ```
 
 
@@ -37,7 +42,7 @@ A lo largo de este ejercicio, apliqué los conocimientos adquiridos durante el m
 
 ## 🛠️ Herramientas utilizadas
 
-- SQL (MySQL)
+
 - MySQL Workbench 
 - Sakila Database
 
@@ -74,9 +79,9 @@ LIMIT 1;
 
 
 
-- ✅ Captura del archivo `.sql` de consulta y su resultado 
+- ✅ Captura del archivo `.sql` de consulta y su resultado
 
-![Ejemplo de consulta](recursos/query20.png)
+![Ejemplo de consulta](recursos/query20.PNG)
 
  
  ##
