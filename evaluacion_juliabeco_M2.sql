@@ -1,57 +1,10 @@
+-- Evaluación Final - Módulo 2
 
-
-#Carpeta
+-- Ubicación
 -- https://github.com/Adalab/bda-modulo-2-evaluacion-final-juliabeco
 
 
 # Resoluciones
-/*
-Ejercicios
- 1. Selecciona todos los nombres de las películas sin que aparezcan duplicados.
- 2. Muestra los nombres de todas las películas que tengan una clasificación de "PG-13".
- 3. Encuentra el título y la descripción de todas las películas que contengan la palabra "amazing" en su
- descripción.
- 4. Encuentra el título de todas las películas que tengan una duración mayor a 120 minutos.
- 5. Recupera los nombres de todos los actores.
- 6. Encuentra el nombre y apellido de los actores que tengan "Gibson" en su apellido.
- 7. Encuentra los nombres de los actores que tengan un actor_id entre 10 y 20.
- 8. Encuentra el título de las películas en la tabla film que no sean ni "R" ni "PG-13" en cuanto a su
- clasificación.
- 9. Encuentra la cantidad total de películas en cada clasificación de la tabla film y muestra la clasificación
- junto con el recuento.
- 10. Encuentra la cantidad total de películas alquiladas por cada cliente y muestra el ID del cliente, su
- nombre y apellido junto con la cantidad de películas alquiladas.
- 11. Encuentra la cantidad total de películas alquiladas por categoría y muestra el nombre de la categoría
- junto con el recuento de alquileres.
- 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la
- clasificación junto con el promedio de duración.
- 13. Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
- 14. Muestra el título de todas las películas que contengan la palabra "dog" o "cat" en su descripción.
- 15. Encuentr a el título de todas las películas que fueron lanzadas entre el año 2005 y 2010.
- 16. Encuentra el título de todas las películas que son de la misma categoría que "Family".
- 17. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla
- film.
- BONUS
- Nota: Los ejercicios bonus son opcionales. Si decides hacerlos, te recomendamos que primero hagas
- los ejercicios obligatorios y luego los bonus. La realización de estos ejercicios puede ayudarte a
- reforzar tus conocimientos y habilidades en SQL. No influyen en tu nota final.
- 18. Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.
- 19. Hay algún actor o actriz que no apareca en ninguna película en la tabla film_actor.
- 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y
- muestra el nombre de la categoría junto con el promedio de duración.
- 21. Encuentra los actores que han actuado en al menos 5 películas y muestra el nombre del actor junto con
- la cantidad de películas en las que han actuado.
- 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una
- subconsulta para encontrar los rental_ids con una duración superior a 5 días y luego selecciona las
- películas correspondientes.
- 23. Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría
- "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
- categoría "Horror" y luego exclúyelos de la lista de actores.
- 24. Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la
- tabla film.
- 25. Encuentra todos los actores que han actuado juntos en al menos una película. La consulta debe mostrar
- el nombre y apellido de los actores y el número de películas en las que han actuado juntos
- */
  
 USE sakila;
 
@@ -62,27 +15,27 @@ USE sakila;
 SELECT *
 FROM film; -- el output ya me indica 1000 filas
 
-SELECT COUNT(film_id)
+SELECT COUNT(film_id) AS total_peliculas
 FROM film; -- double check
 
 # Esta query muestra todos los nombres de peliculas sin duplicados
-SELECT DISTINCT title 
+SELECT DISTINCT title AS titulo_pelicula
 FROM film;
  
 -- 2. Muestra los nombres de todas las películas que tengan una clasificación de "PG-13".
 
-SELECT title 
+SELECT title AS titulo_PG13
 FROM film
 WHERE rating = 'PG-13'; -- hay 223
 
 -- 3. Encuentra el título y la descripción de todas las películas que contengan la palabra "amazing" en su descripción.
 
-SELECT title, description 
+SELECT title AS titulo, description AS descripcion_amazing 
 FROM film
 WHERE description LIKE '%amazing%'; -- hay 48
 
 --  4. Encuentra el título de todas las películas que tengan una duración mayor a 120 minutos.
-SELECT title
+SELECT title AS titulo_duracion_mas2h
 FROM film
 WHERE length >120; -- 457 PELIS
 
@@ -119,12 +72,12 @@ WHERE actor_id BETWEEN 10 AND 20;
 # 2 EJEMPLOS PARA RESOLVERLO, UNA UTILIZANDO != y AND,  Y OTRA CON NOT IN
 
 #1
-SELECT title, rating 
+SELECT title AS titulo, rating AS clasificacion
 FROM film
 WHERE rating != 'PG-13' AND rating != 'R'; -- 582 Peliculas
 
 #2
-SELECT title, rating 
+SELECT title AS titulo, rating AS clasificacion
 FROM film
 WHERE rating NOT IN ('PG-13','R');  -- 582 Peliculas
 
@@ -148,10 +101,10 @@ ORDER BY total_peliculas DESC, categoria; -- 16 CATEGORIAS
 
 -- 10. Encuentra la cantidad total de películas alquiladas por cada cliente y muestra el ID del cliente, su nombre y apellido junto con la cantidad de películas alquiladas.
 
-SELECT c.customer_id, c.first_name, c.last_name, COUNT(r.rental_id) AS total_alquiladas
+SELECT c.customer_id AS id, c.first_name AS nombre, c.last_name AS apellido, COUNT(r.rental_id) AS total_alquiladas
 FROM customer as c
 LEFT JOIN rental AS r USING(customer_id)
-GROUP BY c.customer_id, c.first_name, c.last_name
+GROUP BY id
 ORDER BY total_alquiladas DESC; -- 599 CLIENTES
 
 
@@ -175,15 +128,13 @@ GROUP BY rating; -- 5 TIPOS DE CLASIFICACION
 
 
 #Considerando tipo de categoria de tabla category
-SELECT c.name, ROUND(AVG(f.length),2) AS duracion_media
+SELECT c.name AS categoria, ROUND(AVG(f.length),2) AS duracion_media
 FROM category AS c
 INNER JOIN film_category AS fc USING(category_id)
 INNER JOIN film AS f USING (film_id)
 INNER JOIN inventory AS i USING(film_id)
 INNER JOIN rental AS r USING(inventory_id)
-GROUP BY c.name; -- 16 CATEGORIAS
-
-
+GROUP BY categoria; -- 16 CATEGORIAS
 
 
 -- 13 Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
@@ -208,20 +159,20 @@ WHERE description REGEXP 'dog|cat'; -- 167 RESULTADOS
 
 -- 15. Encuentra el título de todas las películas que fueron lanzadas entre el año 2005 y 2010.
 
-SELECT title, release_year
+SELECT title AS titulo, release_year AS ano_lanzamiento
 FROM film
 WHERE release_year BETWEEN 2005 AND 2010;
 -- PARECE QUE LA BASE SOLO TIENE PELIS LANZADAS DEL 2006
 
 -- 16. Encuentra el título de todas las películas que son de la misma categoría que "Family".
-SELECT f. title, c.name
+SELECT f. title AS titulo, c.name AS categoria
 FROM film AS f
 LEFT JOIN film_category AS fc USING (film_id)
 LEFT JOIN category AS c USING(category_id)
 WHERE c.name = 'Family'; -- 69 peliculas
 
 -- 17. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.
-SELECT title, rating, length
+SELECT title AS titulo, rating AS clasificacion, length AS duracion
 FROM film
 WHERE rating ='R' AND length > 120
 ORDER BY length; -- 90 pelis
@@ -229,28 +180,7 @@ ORDER BY length; -- 90 pelis
 
 
 -- BONUS --
-/*
-BONUS
- Nota: Los ejercicios bonus son opcionales. Si decides hacerlos, te recomendamos que primero hagas
- los ejercicios obligatorios y luego los bonus. La realización de estos ejercicios puede ayudarte a
- reforzar tus conocimientos y habilidades en SQL. No influyen en tu nota final.
- 18. Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.
- 19. Hay algún actor o actriz que no apareca en ninguna película en la tabla film_actor.
- 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y
- muestra el nombre de la categoría junto con el promedio de duración.
- 21. Encuentra los actores que han actuado en al menos 5 películas y muestra el nombre del actor junto con
- la cantidad de películas en las que han actuado.
- 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una
- subconsulta para encontrar los rental_ids con una duración superior a 5 días y luego selecciona las
- películas correspondientes.
- 23. Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría
- "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
- categoría "Horror" y luego exclúyelos de la lista de actores.
- 24. Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la
- tabla film.
- 25. Encuentra todos los actores que han actuado juntos en al menos una película. La consulta debe mostrar
- el nombre y apellido de los actores y el número de películas en las que han actuado juntos
-*/
+
 
 -- 18. Muestra el nombre y apellido de los actores que aparecen en más de 10 películas.
 # MOSTRANDO SOLO NOMBRE Y APELLIDO
@@ -276,9 +206,32 @@ LEFT JOIN film_actor AS fa USING(actor_id)
 GROUP BY a.actor_id
 HAVING cantidad_peliculas <1; -- NO HAY
 
+# Para chequear cual es el actor que tiene el minimo actuaciones en peliculas puedo usar el LIMIT 
+SELECT a.actor_id, COUNT(fa.film_id) AS cantidad_peliculas
+FROM actor AS a
+LEFT JOIN film_actor AS fa USING(actor_id)
+GROUP BY a.actor_id
+ORDER BY cantidad_peliculas
+LIMIT 1; 
+
+# Si quisiera chequearlo con MIN, deberia hacer una subconsulta que busque ese valor minimo de peliculas actuadas y despues
+# en la query principal buscar el id y cantidad de peliculas con la condicion que sea igual al valor minimo.
+
+SELECT a.actor_id AS id, COUNT(fa.film_id) AS cantidad_peliculas
+FROM actor AS a
+LEFT JOIN film_actor AS fa USING(actor_id)
+GROUP BY a.actor_id
+HAVING COUNT(fa.film_id) = 
+	(SELECT MIN(cantidad_peliculas)
+	FROM (  SELECT COUNT(fa.film_id) AS cantidad_peliculas
+			FROM actor AS a
+			LEFT JOIN film_actor AS fa USING(actor_id)
+			GROUP BY a.actor_id) AS min_pelis);
+
+
 -- 20. Encuentra las categorías de películas que tienen un promedio de duración superior a 120 minutos y muestra el nombre de la categoría junto con el promedio de duración.
 
-SELECT c.name, ROUND(AVG(f.length),2) AS duracion_media
+SELECT c.name AS categoria, ROUND(AVG(f.length),2) AS duracion_media
 FROM category AS c
 INNER JOIN film_category AS fc USING(category_id)
 INNER JOIN film AS f USING (film_id)
@@ -311,8 +264,8 @@ WHERE DATEDIFF(return_date, rental_date) > 5)
 ORDER BY dias_rentados; -- 3187 TITULOS DIFERENTES 
 
 --  23. Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría
- -- "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
- -- categoría "Horror" y luego exclúyelos de la lista de actores.
+-- "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
+-- categoría "Horror" y luego exclúyelos de la lista de actores.
  
 SELECT a.actor_id, a.first_name AS nombre, a.last_name AS apellido 
  FROM actor AS a
