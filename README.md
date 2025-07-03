@@ -53,12 +53,12 @@ A lo largo de este ejercicio, apliqué los conocimientos adquiridos durante el m
 
 
 
-- 🖥️ Vista general de las tablas de la base de datos en tu cliente SQL
+- 🖥️ Vista general de las tablas de la base de datos - Diagrama Entidad-Relación
 
 ![Diagrama de relaciones Sakila](recursos/Diagrama.PNG)
 
 
-- 📊 Ejemplo de consulta y su resultado 
+- 📊 Ejemplo de consulta
 
 ```sql
 -- 19. Existe algún actor o actriz que no apareca en ninguna película en la tabla film_actor.
