@@ -222,8 +222,8 @@ FROM actor AS a
 LEFT JOIN film_actor AS fa USING(actor_id)
 GROUP BY a.actor_id
 HAVING COUNT(fa.film_id) = 
-	(SELECT MIN(cantidad_peliculas)   						 		-- sub consulta que selecciona cual es el mínimo de películas que actuó un actor
-	FROM (  SELECT COUNT(fa.film_id) AS cantidad_peliculas   		-- sub-sub consulta que calcula la cantidad de pelis de cada actor
+	(SELECT MIN(cantidad_peliculas)   				 -- sub consulta que selecciona cual es el mínimo de películas que actuó un actor
+	FROM (  SELECT COUNT(fa.film_id) AS cantidad_peliculas   	 -- sub-sub consulta que calcula la cantidad de pelis de cada actor
 			FROM actor AS a
 			LEFT JOIN film_actor AS fa USING(actor_id)
 			GROUP BY a.actor_id) AS min_pelis);
