@@ -10,7 +10,7 @@ USE sakila;
 
  -- 1. Selecciona todos los nombres de las películas sin que aparezcan duplicados.
  
- # Primero exploro la tabla que me interesa y corroboro cuantas peliculas hay para saber si tengo duplicados o no luego.
+ # Primero exploro la tabla que me interesa y corroboro cuantas películas hay para saber si tengo duplicados o no luego.
  
 SELECT *
 FROM film; -- el output ya me indica 1000 filas
@@ -18,7 +18,7 @@ FROM film; -- el output ya me indica 1000 filas
 SELECT COUNT(film_id) AS total_peliculas
 FROM film; -- double check
 
-# Esta query muestra todos los nombres de peliculas sin duplicados
+# Esta query muestra todos los nombres de películas sin duplicados
 SELECT DISTINCT title AS titulo_pelicula
 FROM film;
  
@@ -41,7 +41,7 @@ WHERE length >120; -- 457 PELIS
 
 -- 5. Recupera los nombres de todos los actores.
 
-# 3 OPCIONES DE RESOLUCION
+# 3 OPCIONES DE RESOLUCIÓN
 
 #1 SELECCIONAR TODOS LOS NOMBRES SIN ELIMINAR DUPLICADOS 
 SELECT first_name 
@@ -63,7 +63,7 @@ WHERE last_name LIKE '%GIBSON%'; -- 1 actor
 
 --  7. Encuentra los nombres de los actores que tengan un actor_id entre 10 y 20.
 
-#Se incluye en la query actor_id para mostrar que son los id de interes (SE INCLUYEN LOS LIMITES)
+#Se incluye en la query actor_id para mostrar que son los id de interés (SE INCLUYEN LOS LÍMITES)
 SELECT actor_id, first_name 
 FROM actor
 WHERE actor_id BETWEEN 10 AND 20;
@@ -74,21 +74,21 @@ WHERE actor_id BETWEEN 10 AND 20;
 #1
 SELECT title AS titulo, rating AS clasificacion
 FROM film
-WHERE rating != 'PG-13' AND rating != 'R'; -- 582 Peliculas
+WHERE rating != 'PG-13' AND rating != 'R'; -- 582 Películas
 
 #2
 SELECT title AS titulo, rating AS clasificacion
 FROM film
-WHERE rating NOT IN ('PG-13','R');  -- 582 Peliculas
+WHERE rating NOT IN ('PG-13','R');  -- 582 Películas
 
 -- 9. Encuentra la cantidad total de películas en cada clasificación de la tabla film y muestra la clasificación junto con el recuento.
 
 # 2 interpretaciones
 
-# Considerando la columna rating como clasificacion
+# Considerando la columna rating como clasificación
 SELECT COUNT(*) AS total_peliculas, rating AS clasificacion
 FROM film
-GROUP BY rating; -- 5 TIPOS DE CLASIFICACION
+GROUP BY rating; -- 5 TIPOS DE CLASIFICACIÓN
 
 #Considerando tipo de categoria de la tabla category 
 -- ORDEN POR TOTAL Y SI EXISTEN DOS CATEGORIAS CON MISMO VALOR QUE SEA POR ORDEN ALFABETICO
@@ -121,13 +121,13 @@ GROUP BY c.name;
 
 -- 12. Encuentra el promedio de duración de las películas para cada clasificación de la tabla film y muestra la clasificación junto con el promedio de duración.
 
-#Considerando la columna rating como clasificacion
+#Considerando la columna rating como clasificación
 SELECT rating AS clasificacion, ROUND(AVG(length),2) AS duracion_media
 FROM film
 GROUP BY rating; -- 5 TIPOS DE CLASIFICACION
 
 
-#Considerando tipo de categoria de tabla category
+#Considerando tipo de categoría de tabla category
 SELECT c.name AS categoria, ROUND(AVG(f.length),2) AS duracion_media
 FROM category AS c
 INNER JOIN film_category AS fc USING(category_id)
@@ -138,7 +138,7 @@ GROUP BY categoria; -- 16 CATEGORIAS
 
 
 -- 13 Encuentra el nombre y apellido de los actores que aparecen en la película con title "Indian Love".
-#Se puede incluir o no en el resultado la columna de titulo, en este caso se muestra para corroborar que peli es
+#Se puede incluir o no en el resultado la columna de título, en este caso se muestra para corroborar que peli es
 
 SELECT DISTINCT CONCAT (a.first_name, ' ', a.last_name) AS nombre_completo, f.title AS titulo
 FROM actor AS a
@@ -169,7 +169,7 @@ SELECT f. title AS titulo, c.name AS categoria
 FROM film AS f
 LEFT JOIN film_category AS fc USING (film_id)
 LEFT JOIN category AS c USING(category_id)
-WHERE c.name = 'Family'; -- 69 peliculas
+WHERE c.name = 'Family'; -- 69 películas
 
 -- 17. Encuentra el título de todas las películas que son "R" y tienen una duración mayor a 2 horas en la tabla film.
 SELECT title AS titulo, rating AS clasificacion, length AS duracion
@@ -199,14 +199,14 @@ GROUP BY actor_id
 HAVING cantidad_peliculas >10
 ORDER BY cantidad_peliculas DESC;
 
--- 19. Hay algún actor o actriz que no apareca en ninguna película en la tabla film_actor.
+-- 19. Hay algún actor o actriz que no aparezca en ninguna película en la tabla film_actor.
 SELECT a.actor_id, COUNT(fa.film_id) AS cantidad_peliculas
 FROM actor AS a
 LEFT JOIN film_actor AS fa USING(actor_id)
 GROUP BY a.actor_id
 HAVING cantidad_peliculas <1; -- NO HAY
 
-# Para chequear cual es el actor que tiene el minimo actuaciones en peliculas puedo usar el LIMIT 
+# Para chequear cual es el actor que tiene el mínimo actuaciones en películas puedo usar el LIMIT 
 SELECT a.actor_id, COUNT(fa.film_id) AS cantidad_peliculas
 FROM actor AS a
 LEFT JOIN film_actor AS fa USING(actor_id)
@@ -214,16 +214,16 @@ GROUP BY a.actor_id
 ORDER BY cantidad_peliculas
 LIMIT 1; 
 
-# Si quisiera chequearlo con MIN, deberia hacer una subconsulta que busque ese valor minimo de peliculas actuadas y despues
-# en la query principal buscar el id y cantidad de peliculas con la condicion que sea igual al valor minimo.
+# Si quisiera chequearlo con MIN, deberia hacer una subconsulta que busque calcule y luego encuentre ese valor minimo de peliculas actuadas y despues
+# en la query principal buscar el id y cantidad de películas con la condición que sea igual al valor minimo.
 
-SELECT a.actor_id AS id, COUNT(fa.film_id) AS cantidad_peliculas
+SELECT a.actor_id AS id, COUNT(fa.film_id) AS cantidad_peliculas	-- consulta principal que muestra id, cant de pelis, del actor que actuó en el mínimo de pelis de toda la tabla
 FROM actor AS a
 LEFT JOIN film_actor AS fa USING(actor_id)
 GROUP BY a.actor_id
 HAVING COUNT(fa.film_id) = 
-	(SELECT MIN(cantidad_peliculas)
-	FROM (  SELECT COUNT(fa.film_id) AS cantidad_peliculas
+	(SELECT MIN(cantidad_peliculas)   						 		-- sub consulta que selecciona cual es el mínimo de películas que actuó un actor
+	FROM (  SELECT COUNT(fa.film_id) AS cantidad_peliculas   		-- sub-sub consulta que calcula la cantidad de pelis de cada actor
 			FROM actor AS a
 			LEFT JOIN film_actor AS fa USING(actor_id)
 			GROUP BY a.actor_id) AS min_pelis);
@@ -250,18 +250,26 @@ GROUP BY actor_id
 HAVING cantidad_peliculas >5
 ORDER BY cantidad_peliculas DESC;
 
--- 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una  subconsulta para encontrar los rental_ids 
+-- 22. Encuentra el título de todas las películas que fueron alquiladas por más de 5 días. Utiliza una subconsulta para encontrar los rental_ids 
 -- con una duración superior a 5 días y luego selecciona las películas correspondientes.
 
-SELECT DISTINCT f.title AS titulo, DATEDIFF(return_date, rental_date) AS dias_rentados
+SELECT DISTINCT f.title AS titulo
 FROM film AS f
 JOIN inventory AS i USING (film_id)
 JOIN rental AS r USING (inventory_id)
 WHERE rental_id IN
 (SELECT rental_id
-FROM rental AS r
-WHERE DATEDIFF(return_date, rental_date) > 5)
-ORDER BY dias_rentados; -- 3187 TITULOS DIFERENTES 
+	FROM rental AS r
+	WHERE DATEDIFF(return_date, rental_date) > 5)
+ORDER BY f.title; -- 955 TITULOS DIFERENTES 
+
+# sin subconsulta quedaría más simple:
+SELECT DISTINCT f.title AS titulo
+FROM film AS f
+JOIN inventory AS i USING (film_id)
+JOIN rental AS r USING (inventory_id)
+WHERE DATEDIFF(r.return_date, r.rental_date) > 5
+ORDER BY f.title;
 
 --  23. Encuentra el nombre y apellido de los actores que no han actuado en ninguna película de la categoría
 -- "Horror". Utiliza una subconsulta para encontrar los actores que han actuado en películas de la
@@ -279,11 +287,11 @@ SELECT a.actor_id, a.first_name AS nombre, a.last_name AS apellido
  
  -- 24. Encuentra el título de las películas que son comedias y tienen una duración mayor a 180 minutos en la tabla film.
  
- SELECT f.title AS titulo -- , c.name AS categoria , f.length AS duracion
+ SELECT f.title AS titulo -- , c.name AS categoría , f.length AS duración
  FROM film AS f
  LEFT JOIN film_category AS fc USING (film_id)
  LEFT JOIN category AS c USING (category_id)
- WHERE c.name = 'Comedy' AND f.length > 180;  -- 3 peliculas 
+ WHERE c.name = 'Comedy' AND f.length > 180;  -- 3 películas 
  
  -- 25. Encuentra todos los actores que han actuado juntos en al menos una película. La consulta debe mostrar
  -- el nombre y apellido de los actores y el número de películas en las que han actuado juntos
@@ -301,7 +309,7 @@ JOIN film_actor fa2
     ON fa1.film_id = fa2.film_id 
     AND fa1.actor_id < fa2.actor_id 
     -- se emparejan actores distintos que hayan actuado en la misma película, 
-    -- y se usa < en lugar de <> para evitar duplicados (ej: evitar contar 1-3 y 3-1 como dos pares distintos)
+    -- y se usa < en vez de <> para evitar duplicados (ej: evitar contar 1-3 y 3-1 como dos pares distintos)
 JOIN actor a1 ON fa1.actor_id = a1.actor_id
 JOIN actor a2 ON fa2.actor_id = a2.actor_id
 GROUP BY a1.actor_id, a2.actor_id
